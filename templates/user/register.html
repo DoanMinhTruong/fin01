@@ -1,0 +1,48 @@
+{% extends 'base_user.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-center text-white my-3 border-bottom">
+    <div class="h1 fw-bold">REGISTER</div>
+</div>
+<form action="" method="POST" id="register_form" class="text-white">
+    {% csrf_token %}
+    <!-- {{form.as_p}} -->
+    {% for field in form %}
+	<p>
+		{% if field.errors %}
+		<ul class="errorlist">
+			{% for error in field.errors %}
+			<li class="text-warning">{{ error }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+	 	{{ field.label_tag }} {{ field }}
+	</p>
+	{% endfor %}
+    <!-- <div id="first_name_form" class="row my-5 input-group">
+        <label for="first_name" class="col-md-5 h3">First name:</label>
+        <input type="text" name="first_name" id="first_name" class="col-md-7 form-control">
+    </div>
+    <div id="last_name_form" class="row my-5 h3 input-group">
+        <label for="last_name" class="col-md-5">Last name:</label>
+        <input type="text" name="last_name" id="last_name" class="col-md-7 form-control">
+    </div>
+    <div id="email_form" class="row my-5 h3 input-group">
+        <label for="email" class="col-md-5">Email:</label>
+        <input type="text" name="email" id="email" class="col-md-7 form-control">
+    </div>
+    <div id="user_name_form" class="row my-5 h3 input-group">
+        <label for="username" class="col-md-5">Username:</label>
+        <input type="text" name="username" id="username" class="col-md-7 form-control">
+    </div>
+    <div id="password_form" class="row my-5 h3 input-group">
+        <label for="password" class="col-md-5">Password:</label>
+        <input type="password" name="password" id="password" class="col-md-7 form-control">
+    </div> -->
+    <div id="submit_form" class="row justify-content-center">
+        <input type="submit" value="Register" class="btn btn-info px-4 py-2 fw-bold col-md-3" style="font-size: 22px;">
+    </div>
+    <p>Already has an account? <a href="{%url 'user_login' %}">Login</a></p>
+</form>
+
+{% endblock %}
