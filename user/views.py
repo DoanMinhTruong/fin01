@@ -3,6 +3,8 @@
 from django.shortcuts import render, redirect
 from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from .models import User
 def register(request):
     if request.user.is_authenticated: 
         return redirect('/dashboard/') 
@@ -39,3 +41,10 @@ from django.contrib.auth import logout
 def logout_view(request):
     logout(request)
     return redirect('/user/login/')
+
+
+@login_required
+def get_user_info(request):
+  user = get_user_model().objects.get(id=request.user.id)
+  
+  return render(request, 'home/user.html' , context={'user' : user.username , 'user_info' : user})

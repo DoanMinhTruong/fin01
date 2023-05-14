@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import requests
 from datetime import datetime
 # Create your views here.
@@ -30,12 +30,13 @@ def get_stock(request, stock):
     item['index'] = index 
     index = index -1
   sorted_timestamp = sorted(data, key=lambda x: x['timestamp'])
-  for i in sorted_timestamp:
-    print(i['date'], i['time'], i['timestamp'])
+  # for i in sorted_timestamp:
+  #   print(i['date'], i['time'], i['timestamp'])
   return JsonResponse({'data' : sorted_timestamp})
 
 
 from django.contrib.auth.decorators import login_required
 @login_required
 def dashboard(request):
-    return render(request , 'home/dashboard.html' , context={})
+  return render(request , 'home/dashboard.html' , context={'user' : request.user.username})
+

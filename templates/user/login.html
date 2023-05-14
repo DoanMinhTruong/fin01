@@ -17,4 +17,17 @@
         height: 50vh;
     }
 </style>
+<script>
+    $(document).ready(function(){
+        var form = document.getElementById("login_form");
+        var ps = form.getElementsByTagName('p');
+        for(let i = 0 ; i < ps.length; i++){
+            ps[i].setAttribute('class' , 'row my-4 input-group');
+            let label = ps[i].getElementsByTagName('label')[0];
+            label.setAttribute('class','col-md-5 h5');
+            let input = ps[i].getElementsByTagName('input')[0];
+            input.setAttribute('class','col-md-7 form-control');
+        }
+    })
+</script>
 {% endblock %}

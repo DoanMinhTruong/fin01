@@ -25,7 +25,7 @@
                             <a href="#" class="brand"><i class="fa fa-code"></i>finez</a>
                         </div>
                         <div class="menu-control">
-                            <a href="#" class="menu-item"><i class="fa fa-home"></i>TERMINAL</a>
+                            <a href="{% url 'dashboard' %}" class="menu-item"><i class="fa fa-home"></i>DASHBOARD</a>
                         </div>
                         <div class="menu-control">
                             <a href="#" class="menu-item"><i class="fa fa-history"></i>HISTORY TRADING</a>
@@ -34,7 +34,7 @@
                             <a href="#" class="menu-item"><i class="fa fa-envelope"></i>CONTACT</a>
                         </div>
                         <div class="menu-control">
-                            <a href="#" class="menu-item"><i class="fa fa-user"></i>User</a>
+                            <a href="{% url 'user_info' %}" class="menu-item text-info"><i class="fa fa-user"></i>{{user}}</a>
                         </div>
                         <div class="menu-control">
                             <a href="{% url 'user_logout' %}" class="menu-item"><i class="fa fa-user"></i>Logout</a>
@@ -42,12 +42,12 @@
                     </div>
                 </div>
                 <div class="col-md-10" id = "content">
-                        <div id="main" class="row">
+                        <div id="main" class="row" style="height:93%;">
                             {% block content %}
-
+ 
                             {% endblock %}
                         </div>
-                        <div id="current_time" class="d-flex justify-content-center">
+                        <div id="current_time" class="d-flex justify-content-center align-items-end">
                            
                         </div>
                         <script>
