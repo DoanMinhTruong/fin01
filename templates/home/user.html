@@ -27,7 +27,33 @@
             <div class="col-md-4">Date Joined:</div>
             <div class="col-md-8">{{user_info.date_joined}}</div>
         </div>
+        <button id="btn_reset_password" class="btn btn-primary">
+            Reset Password
+        </button>
+        <script>
+            $(document).ready(function(){
+                let el = document.getElementById('frm_reset_password')
+                $("#btn_reset_password").click(function(){
+                    if(el && el.style.display == 'block'){
+                        el.style.display = 'none';
+                    }else{
+                        el.style.display = 'block';
+                    }
+                })
+            })
+        </script>
+        <form action="{% url 'reset_password' %}" method="POST" class="my-3" id="frm_reset_password" style="display:none; width:40%;">
+            {% csrf_token %}
+
+            {{form.as_p}}
+            <input type="submit" class="btn btn-success" value="Change">
+        </form>
+        {% if message %}
+            {{ message }}
+        {% endif %}
     </div>
+
+    
 </div>
 
 {% endblock %}

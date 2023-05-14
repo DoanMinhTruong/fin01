@@ -46,5 +46,23 @@ def logout_view(request):
 @login_required
 def get_user_info(request):
   user = get_user_model().objects.get(id=request.user.id)
-  
-  return render(request, 'home/user.html' , context={'user' : user.username , 'user_info' : user})
+  form = CustomPasswordChangeForm(user=request.user)
+  return render(request, 'home/user.html' , context={'user' : user.username , 'user_info' : user , 'form' : form})
+
+from .forms import CustomPasswordChangeForm
+@login_required
+def reset_password(request):
+    user = get_user_model().objects.get(id=request.user.id)
+    form = CustomPasswordChangeForm(user=request.user)
+    message = 'Đổi mật khẩu  không thành công'
+    
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            message = 'Đổi mật khẩu thành công'
+            logout(request)
+            return redirect('/user/login/')
+    else:
+        form = CustomPasswordChangeForm(user=request.user)
+    return render(request, 'home/user.html' , context={'user' : user.username , 'user_info' : user , 'form' : form , 'message' : message})
