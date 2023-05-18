@@ -15,12 +15,14 @@
             select_stock.appendChild(option);
         })
     </script>
-    <div id="myChart" ></div>
+    <div id="_30CompanyChart"  ></div>
+    <div id="VN30Chart">
+    </div>
     <script>
         var myChart ;
     
         $('#select-stock').on('change', function(e){
-            $("#myChart").html("");
+            $("#_30CompanyChart").html("");
             var optionSelected = $("option:selected", this);
             var valueSelected = this.value;
             $.ajax({
@@ -45,7 +47,8 @@
                     var options = {
                         chart: {
                             type: 'candlestick',
-                            height: 500
+                            height: 230,
+                            foreColor : '#b2bbbf'
                         },
                         series: [{
                             data: price
@@ -82,7 +85,7 @@
                             }
                         },
                     };
-                    myChart = new ApexCharts(document.querySelector("#myChart")  , options )
+                    myChart = new ApexCharts(document.querySelector("#_30CompanyChart")  , options )
                     myChart.render();
                 },
                 error: function(xhr, status, error) {
@@ -92,6 +95,95 @@
         })
         $("#select-stock").change();
         
+    </script>
+    <script>
+        var time_range = 'SixMonths';
+        $.ajax({
+                url: ('/dashboard/vn30/' + time_range + '/'),
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    data = JSON.parse(data['data']);
+                    let hI = [];
+                    let lI = [];
+                    let oI = [];
+                    let cI = [];
+                    let time = [];
+                    console.log(data)
+                    $.each(data.highestIndex, function(key, value){
+                        time.push(Number(key));
+                        hI.push(value);
+                    })
+                    $.each(data.lowestIndex, function(key, value){
+                        lI.push(value);
+                    })
+                    $.each(data.openIndex, function(key, value){
+                        oI.push(value);
+                    })
+                    $.each(data.closeIndex, function(key, value){
+                        cI.push(value);
+                    })
+                    // console.log(time, dt)
+
+                    var options = {
+                        series: [{
+                            name: "HighestIndex",
+                            data: hI,
+                        },
+                        {
+                            name: "LowestIndex",
+                            data: lI,
+                        },
+                        {
+                            name: "OpenIndex",
+                            data: oI,
+                        },
+                        {
+                            name: "CloseIndex",
+                            data: cI,
+                        }
+                    ],
+                        chart: {
+                            type: 'area',
+                            height: 350,
+                            zoom: {
+                                enabled: false
+                            }
+                        },
+                        dataLabels: {
+                            enabled: false
+                        },
+                        stroke: {
+                            curve: 'straight'
+                        },
+
+                        title: {
+                            text: 'Fundamental Analysis of Stocks',
+                            align: 'left'
+                        },
+                        subtitle: {
+                            text: 'Price Movements',
+                            align: 'left'
+                        },
+                        labels: time,
+                        xaxis: {
+                            type: 'numeric',
+                        },
+                        yaxis: {
+                            opposite: true
+                        },
+                        legend: {
+                            horizontalAlign: 'left'
+                        }
+                    };
+
+                    var chart = new ApexCharts(document.querySelector("#VN30Chart"), options);
+                    chart.render();
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
     </script>
 </div>
 <div class="col-md-3">

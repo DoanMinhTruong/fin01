@@ -24,19 +24,19 @@
                         <div class="menu-control">
                             <a href="#" class="brand"><i class="fa fa-code"></i>finez</a>
                         </div>
-                        <div class="menu-control">
+                        <div class="menu-control" id="menu-control-dashboard">
                             <a href="{% url 'dashboard' %}" class="menu-item"><i class="fa fa-home"></i>DASHBOARD</a>
                         </div>
-                        <div class="menu-control">
+                        <div class="menu-control" id="menu-control-history">
                             <a href="#" class="menu-item"><i class="fa fa-history"></i>HISTORY TRADING</a>
                         </div>
-                        <div class="menu-control">
+                        <div class="menu-control" id="menu-control-contact">
                             <a href="#" class="menu-item"><i class="fa fa-envelope"></i>CONTACT</a>
                         </div>
-                        <div class="menu-control">
-                            <a href="{% url 'user_info' %}" class="menu-item text-info"><i class="fa fa-user"></i>{{user}}</a>
+                        <div class="menu-control" id="menu-control-user">
+                            <a href="{% url 'user_info' %}" class="menu-item"><i class="fa fa-user"></i>User</a>
                         </div>
-                        <div class="menu-control">
+                        <div class="menu-control" id="menu-control-logout">
                             <a href="{% url 'user_logout' %}" class="menu-item"><i class="fa fa-user"></i>Logout</a>
                         </div>
                     </div>
@@ -66,4 +66,20 @@
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> -->
+<script>
+    $(document).ready(function(){
+        let url = window.location.href;
+        function doHover(el){
+            el.style.backgroundColor = '#424f5d';
+            el.style.borderLeft = '6px solid #1a73b5';
+            el.style.color = 'blue';
+        }
+        if(url.endsWith('dashboard/')){
+            doHover(document.getElementById('menu-control-dashboard'));
+        }else if(url.endsWith('user/')){
+            doHover(document.getElementById('menu-control-user'));
+
+        }
+    })
+</script>
 </html>

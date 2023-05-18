@@ -39,4 +39,8 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def dashboard(request):
   return render(request , 'home/dashboard.html' , context={'user' : request.user.username})
-
+from vnstock import get_index_series
+def get_vn30(request, time_range):
+  if time_range==None:
+    return JsonResponse({'data' : {}})
+  return JsonResponse({'data' : get_index_series(index_code='VN30', time_range=time_range).to_json()})
