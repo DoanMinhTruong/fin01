@@ -1,4 +1,6 @@
 from django.contrib import admin
+
+from portfolio.models import Portfolio, StockPortfolio
 from .models import User
 from django.contrib.auth.admin import UserAdmin
 
@@ -14,3 +16,5 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = ()
 
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(Portfolio)
+admin.site.register(StockPortfolio)

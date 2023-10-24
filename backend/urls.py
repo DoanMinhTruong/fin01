@@ -15,11 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def tools(request):
+    return render(request, 'home/tools.html')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('dashboard/' , include('dashboard.urls') ),
+    path('dashboard/' , include('dashboard.urls') , name='dashboard'),
     path('', lambda request: redirect('dashboard/')),
     path('user/' , include('user.urls')),
+    path('portfolio/', include('portfolio.urls')),
+    path('tools/' , tools , name = 'tools'),
+    path('mvo/' , include("MVO.urls")),
 ]

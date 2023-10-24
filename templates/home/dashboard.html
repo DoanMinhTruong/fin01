@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <select name="select-stock" id="select-stock"></select>
     <script>
-        _30stock = ['ACB', 'BID', 'BVH', 'CTG', 'DHG', 'DPM', 'EIB', 'FPT', 'GAS', 'GMD', 'HDB', 'HPG', 'MBB', 'MSN', 'MWG', 'NVL', 'PNJ', 'REE', 'ROS', 'SAB', 'SBT', 'SSI', 'STB', 'TCB', 'TPB', 'VCB', 'VHM', 'VIC', 'VJC', 'VPB']
+        _30stock = {{ stocks | safe }}
         select_stock = document.getElementById('select-stock');
         $.each(_30stock, function(key , value){
             let option = document.createElement('option');
@@ -15,8 +15,26 @@
             select_stock.appendChild(option);
         })
     </script>
-    <div id="_30CompanyChart"  ></div>
-    <div id="VN30Chart">
+    <div id="_30CompanyChart" class="m-1"></div>
+    <div id="table_30Company" style="max-height: 37vh; overflow: scroll;">
+        <div class="container mt-2">
+            <table class="table table-bordered text-white">
+                <thead>
+                    <tr>
+                        <th>Ngày</th>
+                        <th>Giá mở cửa</th>
+                        <th>Giá cao nhất</th>
+                        <th>Giá thấp nhất</th>
+                        <th>Giá đóng cửa</th>
+                        <th>Giá trung bình</th>
+                        <th>Thay đổi giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
     </div>
     <script>
         var myChart ;
@@ -25,34 +43,39 @@
             $("#_30CompanyChart").html("");
             var optionSelected = $("option:selected", this);
             var valueSelected = this.value;
+            var table = document.getElementById("table_30Company").querySelector('tbody');
+            table.innerHTML= '';
             $.ajax({
-                url: ('/dashboard/' + valueSelected + '/'),
+                url: ('{% url "dashboard" %}' + valueSelected + '/'),
                 type: 'GET',
-                data:{
-                    'size' : 200,
-                },
+                data:{'size' : 500},
                 dataType: 'json',
                 success: function(data) {
-                    console.log(data);
                     var price = [];
                     $.each(data['data'], function(key, value){
-                        // console.log(value)
                         price.push({
-                            // x: Date.parse(value.date + " " + value.time).valueOf(),
                             x : value.index,
-                            y : [value.open , value.high, value.low, value.close ] ,
+                            y : [value.adOpen , value.adHigh, value.adLow, value.adClose ] ,
                             time: value.date + ' ' + value.time
                         })
+                        table.innerHTML += `
+                        <tr>
+                            <td>${value.date} ${value.time}</td>
+                            <td>${value.adOpen}</td>
+                            <td>${value.adHigh}</td>
+                            <td>${value.adLow}</td>
+                            <td>${value.adClose}</td>
+                            <td>${value.adAverage}</td>
+                            <td>${value.adChange}</td>
+                        </tr>`;
                     });
                     var options = {
                         chart: {
                             type: 'candlestick',
-                            height: 230,
+                            height: 400,
                             foreColor : '#b2bbbf'
                         },
-                        series: [{
-                            data: price
-                        }],
+                        series: [{data: price}],
                         title: {
                             text: valueSelected,
                             align: 'left'
@@ -68,13 +91,10 @@
                                 enabled: true
                             }
                         },
-                        fill:{
-                            colors:['#F44336', '#E91E63', '#9C27B0']
-                        },
+                        fill:{colors:['#F44336', '#E91E63', '#9C27B0']},
                         tooltip: {
                             custom: function ({ series, seriesIndex, dataPointIndex, w }) {
                                 var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
-                                
                                 return '<ul>' +
                                     '<li><b>Open</b>: ' + data.y[0] + '</li>' +
                                     '<li><b>Close</b>: ' + data.y[3] + '</li>' +
@@ -96,113 +116,54 @@
         $("#select-stock").change();
         
     </script>
-    <script>
-        var time_range = 'SixMonths';
-        $.ajax({
-                url: ('/dashboard/vn30/' + time_range + '/'),
-                type: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    data = JSON.parse(data['data']);
-                    let hI = [];
-                    let lI = [];
-                    let oI = [];
-                    let cI = [];
-                    let time = [];
-                    console.log(data)
-                    $.each(data.highestIndex, function(key, value){
-                        time.push(Number(key));
-                        hI.push(value);
-                    })
-                    $.each(data.lowestIndex, function(key, value){
-                        lI.push(value);
-                    })
-                    $.each(data.openIndex, function(key, value){
-                        oI.push(value);
-                    })
-                    $.each(data.closeIndex, function(key, value){
-                        cI.push(value);
-                    })
-                    // console.log(time, dt)
-
-                    var options = {
-                        series: [{
-                            name: "HighestIndex",
-                            data: hI,
-                        },
-                        {
-                            name: "LowestIndex",
-                            data: lI,
-                        },
-                        {
-                            name: "OpenIndex",
-                            data: oI,
-                        },
-                        {
-                            name: "CloseIndex",
-                            data: cI,
-                        }
-                    ],
-                        chart: {
-                            type: 'area',
-                            height: 350,
-                            zoom: {
-                                enabled: false
-                            }
-                        },
-                        dataLabels: {
-                            enabled: false
-                        },
-                        stroke: {
-                            curve: 'straight'
-                        },
-
-                        title: {
-                            text: 'Fundamental Analysis of Stocks',
-                            align: 'left'
-                        },
-                        subtitle: {
-                            text: 'Price Movements',
-                            align: 'left'
-                        },
-                        labels: time,
-                        xaxis: {
-                            type: 'numeric',
-                        },
-                        yaxis: {
-                            opposite: true
-                        },
-                        legend: {
-                            horizontalAlign: 'left'
-                        }
-                    };
-
-                    var chart = new ApexCharts(document.querySelector("#VN30Chart"), options);
-                    chart.render();
-                },
-                error: function (xhr, status, error) {
-                    console.log(error);
-                }
-            });
-    </script>
 </div>
-<div class="col-md-3">
-    <div id="action" class="row">
-        <div class="col-md-6 text-center fw-bold h5 align-items-center" style="color: rgb(100, 231, 100);" id="tab-call">
-            <p>CALL</p>
-        </div>
-        <div class="col-md-6 text-center fw-bold h5 align-items-center" style="color: rgb(242, 137, 137)" id="tab-put">
-            <p>PUT</p>
-        </div>
-    </div>
+<div class="col-md-3 mt-5">
     <div id="balance" class="row text-white ">
         <div class="col-md-6 text-center border-end align-items-center" >
-            $1,200.42
+            <h5>{{balance}}</h5>
         </div>
         <div class="col-md-6 text-center float-start align-items-center" >
-            <button class="btn btn-dark">DEPOSIT</button>
+            <a href="{% url 'deposit' %}"class="btn btn-dark">DEPOSIT</a>
         </div>
     </div>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <script>
+            alert("{{message}}")
+        </script>
+        {% endfor %}
+    </ul>
+{% endif %}
+    <div id="action" class="">
+        <form id="action-form" action="" method="POST">
+            {% csrf_token %}
+            <input type="text" name="portfolio" class="form-control my-4 mr-3" placeholder="Portfolio">
+            <input type="text" name="stock" class="form-control my-4 mr-3" placeholder="Stock">
+            <input type="text" name="amount" class="form-control my-4 mr-3" placeholder="Amount"> 
+            <div id="btn-action-area " class="row">
+                <div id="btn-buy" class="col-md-6">
+                <button type="button" onclick="submitToBuy()" class="form-control" style="background-color: rgb(100, 231, 100);">BUY</button>
+
+                </div>
+                <div id="btn-sell" class="col-md-6">
+                <button type="button" onclick="submitToSell()"  class="form-control" style="background-color: rgb(242, 137, 137)">SELL</button>
+
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+    function submitToBuy() {
+        document.getElementById("action-form").action = "{% url 'buy' %}";
+        document.getElementById("action-form").submit();
+    }
+
+    function submitToSell() {
+        document.getElementById("action-form").action = "{% url 'sell' %}";
+        document.getElementById("action-form").submit();
+    }
+    </script>
 </div>
 
 

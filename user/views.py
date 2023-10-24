@@ -5,6 +5,8 @@ from .forms import CustomUserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from .models import User
+from django.contrib import messages
+
 def register(request):
     if request.user.is_authenticated: 
         return redirect('/dashboard/') 
@@ -37,20 +39,17 @@ def login(request):
 
 from django.contrib.auth import logout
 
-@login_required
 def logout_view(request):
     logout(request)
     return redirect('/user/login/')
 
 
-@login_required
 def get_user_info(request):
   user = get_user_model().objects.get(id=request.user.id)
   form = CustomPasswordChangeForm(user=request.user)
   return render(request, 'home/user.html' , context={'user' : user.username , 'user_info' : user , 'form' : form})
 
 from .forms import CustomPasswordChangeForm
-@login_required
 def reset_password(request):
     user = get_user_model().objects.get(id=request.user.id)
     form = CustomPasswordChangeForm(user=request.user)
@@ -66,3 +65,18 @@ def reset_password(request):
     else:
         form = CustomPasswordChangeForm(user=request.user)
     return render(request, 'home/user.html' , context={'user' : user.username , 'user_info' : user , 'form' : form , 'message' : message})
+
+def deposit(request):
+    if request.method == 'POST':
+        req_amount= request.POST['amount']
+        try:
+            amount = int(req_amount)
+        except ValueError:
+            messages.error(request, 'Invalid Amount')
+            return redirect('dashboard' )
+        
+        user =request.user 
+        user.balance += amount
+        user.save()
+        return redirect('dashboard')        
+    return render(request , 'user/deposit.html' )

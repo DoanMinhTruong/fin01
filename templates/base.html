@@ -17,15 +17,23 @@
 </head>
 
 <body>
-    <div id="window" class="container-fluid   ">
+    <div id="window" class="container-fluid m-0 p-0">
             <div class="row">
                 <div class="col-md-2" id = "menu">
                     <div class="menu-container d-flex flex-column align-items-start">
                         <div class="menu-control">
                             <a href="#" class="brand"><i class="fa fa-code"></i>finez</a>
                         </div>
+                       
+                        
                         <div class="menu-control" id="menu-control-dashboard">
                             <a href="{% url 'dashboard' %}" class="menu-item"><i class="fa fa-home"></i>DASHBOARD</a>
+                        </div>
+                        <div class="menu-control" id="menu-control-history">
+                            <a href="{% url 'tools' %}" class="menu-item"><i class="fa fa-history"></i>TOOLS</a>
+                        </div>
+                        <div class="menu-control" id="menu-control-history">
+                            <a href="{% url 'portfolio' %}" class="menu-item"><i class="fa fa-history"></i>PORTFOLIO</a>
                         </div>
                         <div class="menu-control" id="menu-control-history">
                             <a href="#" class="menu-item"><i class="fa fa-history"></i>HISTORY TRADING</a>
